@@ -1,5 +1,5 @@
 import express from "express";
-import { config, dbConnect } from "./config";
+import { config, dbConnect } from "@/config";
 
 const app = express();
 
