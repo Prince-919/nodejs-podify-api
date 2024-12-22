@@ -1,4 +1,4 @@
 import { CreateUserSchema } from "./validationSchema";
-import { generateOTP } from "./helper";
+import { generateToken } from "./helper";
 
-export { CreateUserSchema, generateOTP };
+export { CreateUserSchema, generateToken };

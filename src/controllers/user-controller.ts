@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import { EmailVerificationToken, User } from "@/models";
 import { CreateUser } from "@/types";
 import { config } from "@/config";
-import { generateOTP } from "@/utils";
+import { generateToken } from "@/utils";
 
 class UserController {
   create: RequestHandler = async (req: CreateUser, res) => {
@@ -18,7 +18,7 @@ class UserController {
       },
     });
 
-    const otp = generateOTP();
+    const otp = generateToken();
 
     await EmailVerificationToken.create({
       owner: user._id,
