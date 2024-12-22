@@ -1,10 +1,5 @@
-import { Schema, model, Model, ObjectId } from "mongoose";
-
-interface EmailVerificationTokenDocument {
-  owner: ObjectId;
-  token: string;
-  createdAt: Date;
-}
+import { EmailVerificationTokenDocument } from "@/types";
+import { Schema, model, Model } from "mongoose";
 
 const emailVerificationTokenSchema = new Schema<EmailVerificationTokenDocument>(
   {
