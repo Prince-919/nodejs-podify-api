@@ -1,5 +1,5 @@
-import { Model, model, Schema } from "mongoose";
 import { UserDocument } from "@/types";
+import { Model, model, Schema } from "mongoose";
 
 const userSchema = new Schema<UserDocument>(
   {
