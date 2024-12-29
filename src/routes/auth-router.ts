@@ -11,5 +11,6 @@ router.post(
   validate(EmailVerificationBody),
   userController.verifyEmail
 );
+router.post("/re-verify-email", userController.sendVerificationToken);
 
 export default router;
