@@ -20,7 +20,9 @@ export interface CreateUser extends Request {
     password: string;
   };
 }
-
-export interface Methods {
-  comparePassword(password: string): Promise<boolean>;
+export interface VerifyEmailRequest extends Request {
+  body: {
+    userId: string;
+    token: string;
+  };
 }
