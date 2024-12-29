@@ -6,6 +6,7 @@ const _config = {
   databaseUrl: process.env.MONGODB_CONNECTION_STRING,
   mailtrapUser: process.env.MAILTRAP_USER,
   mailtrapPass: process.env.MAILTRAP_PASS,
+  verificationEmail: process.env.VERIFICATION_EMAIL,
 };
 
 const config = Object.freeze(_config);
