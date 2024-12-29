@@ -20,3 +20,7 @@ export interface CreateUser extends Request {
     password: string;
   };
 }
+
+export interface Methods {
+  comparePassword(password: string): Promise<boolean>;
+}
