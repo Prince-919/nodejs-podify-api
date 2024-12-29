@@ -12,5 +12,6 @@ router.post(
   userController.verifyEmail
 );
 router.post("/re-verify-email", userController.sendVerificationToken);
+router.post("/forget-password", userController.generateForgetPasswordLink);
 
 export default router;

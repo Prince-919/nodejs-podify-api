@@ -3,6 +3,7 @@ import {
   EmailVerificationTokenDocument,
   Methods,
 } from "./email-verification-token-type";
+import { PasswordResetTokenDocument } from "./password-reset-token";
 
 export {
   UserDocument,
@@ -10,4 +11,5 @@ export {
   EmailVerificationTokenDocument,
   Methods,
   VerifyEmailRequest,
+  PasswordResetTokenDocument,
 };
