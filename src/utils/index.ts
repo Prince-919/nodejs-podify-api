@@ -1,4 +1,4 @@
-import { CreateUserSchema, EmailVerificationBody } from "./validationSchema";
+import { CreateUserSchema, TokenAndIDValidation } from "./validationSchema";
 import { generateToken } from "./helper";
 import { sendVerificationMail, sendForgetPasswordLink } from "./mail";
 
@@ -6,6 +6,6 @@ export {
   CreateUserSchema,
   generateToken,
   sendVerificationMail,
-  EmailVerificationBody,
+  TokenAndIDValidation,
   sendForgetPasswordLink,
 };

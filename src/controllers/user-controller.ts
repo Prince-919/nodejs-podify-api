@@ -98,6 +98,24 @@ class UserController {
     sendForgetPasswordLink({ email: user.email, link: resetLink });
     res.json({ message: "Check you registered mail." });
   };
+
+  isValidPassResetToken: RequestHandler = async (req, res) => {
+    const { token, userId } = req.body;
+
+    const resetToken = await PasswordResetToken.findOne({ owner: userId });
+    if (!resetToken) {
+      res.status(403).json({ error: "Unauthorized access, invalid token!" });
+      return;
+    }
+
+    const matched = await resetToken?.compareToken(token);
+    if (!matched) {
+      res.status(403).json({ error: "Unauthorized access, invalid token!" });
+      return;
+    }
+
+    res.json({ message: "Your token is valid." });
+  };
 }
 
 const userController = new UserController();
