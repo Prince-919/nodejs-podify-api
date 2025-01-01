@@ -1,7 +1,11 @@
 import { RequestHandler } from "express";
 import { EmailVerificationToken, PasswordResetToken, User } from "@/models";
 import { CreateUser, VerifyEmailRequest } from "@/types";
-import { generateToken, sendVerificationMail } from "@/utils";
+import {
+  generateToken,
+  sendForgetPasswordLink,
+  sendVerificationMail,
+} from "@/utils";
 import { isValidObjectId } from "mongoose";
 import crypto from "crypto";
 import { config } from "@/config";
@@ -82,12 +86,17 @@ class UserController {
       return;
     }
 
+    await PasswordResetToken.findOneAndDelete({
+      owner: user._id,
+    });
+
     const token = crypto.randomBytes(36).toString("hex");
 
     await PasswordResetToken.create({ owner: user._id, token });
 
     const resetLink = `${config.passwordResetLink}?token=${token}&userId=${user._id}`;
-    res.json({ resetLink });
+    sendForgetPasswordLink({ email: user.email, link: resetLink });
+    res.json({ message: "Check you registered mail." });
   };
 }
 
