@@ -4,6 +4,7 @@ import { CreateUser, VerifyEmailRequest } from "@/types";
 import {
   generateToken,
   sendForgetPasswordLink,
+  sendPassResetSuccessEmail,
   sendVerificationMail,
 } from "@/utils";
 import { isValidObjectId } from "mongoose";
@@ -99,22 +100,31 @@ class UserController {
     res.json({ message: "Check you registered mail." });
   };
 
-  isValidPassResetToken: RequestHandler = async (req, res) => {
-    const { token, userId } = req.body;
+  grantValid: RequestHandler = async (req, res) => {
+    res.json({ valid: true });
+  };
 
-    const resetToken = await PasswordResetToken.findOne({ owner: userId });
-    if (!resetToken) {
-      res.status(403).json({ error: "Unauthorized access, invalid token!" });
+  updatePassword: RequestHandler = async (req, res) => {
+    const { password, userId } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ error: "Unauthorized access!" });
       return;
     }
 
-    const matched = await resetToken?.compareToken(token);
-    if (!matched) {
-      res.status(403).json({ error: "Unauthorized access, invalid token!" });
+    const matched = await user.comparePassword(password);
+    if (matched) {
+      res.status(422).json({ error: "The new password must be different!" });
       return;
     }
 
-    res.json({ message: "Your token is valid." });
+    user.password = password;
+    await user.save();
+
+    await PasswordResetToken.findOneAndReplace({ owner: user._id });
+
+    sendPassResetSuccessEmail(user.name, user.email);
+    res.json({ message: "Password resets successfully." });
   };
 }
 

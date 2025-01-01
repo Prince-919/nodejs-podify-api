@@ -1,11 +1,21 @@
-import { CreateUserSchema, TokenAndIDValidation } from "./validationSchema";
+import {
+  CreateUserSchema,
+  TokenAndIDValidation,
+  UpdatePasswordSchema,
+} from "./validationSchema";
 import { generateToken } from "./helper";
-import { sendVerificationMail, sendForgetPasswordLink } from "./mail";
+import {
+  sendVerificationMail,
+  sendForgetPasswordLink,
+  sendPassResetSuccessEmail,
+} from "./mail";
 
 export {
   CreateUserSchema,
+  TokenAndIDValidation,
+  UpdatePasswordSchema,
   generateToken,
   sendVerificationMail,
-  TokenAndIDValidation,
   sendForgetPasswordLink,
+  sendPassResetSuccessEmail,
 };

@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { userController } from "@/controllers";
-import { validate } from "@/middlewares";
-import { CreateUserSchema, TokenAndIDValidation } from "@/utils";
+import { isValidPassResetToken, validate } from "@/middlewares";
+import {
+  CreateUserSchema,
+  TokenAndIDValidation,
+  UpdatePasswordSchema,
+} from "@/utils";
 
 const router = Router();
 
@@ -16,7 +20,14 @@ router.post("/forget-password", userController.generateForgetPasswordLink);
 router.post(
   "/verify-pass-reset-token",
   validate(TokenAndIDValidation),
-  userController.isValidPassResetToken
+  isValidPassResetToken,
+  userController.grantValid
+);
+router.post(
+  "/update-password",
+  validate(UpdatePasswordSchema),
+  isValidPassResetToken,
+  userController.updatePassword
 );
 
 export default router;

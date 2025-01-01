@@ -1,3 +1,4 @@
-import { validate } from "./validator";
+import { validate } from "./validator-middleware";
+import { isValidPassResetToken } from "./auth-middleware";
 
-export { validate };
+export { validate, isValidPassResetToken };

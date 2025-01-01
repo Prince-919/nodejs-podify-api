@@ -8,6 +8,7 @@ const _config = {
   mailtrapPass: process.env.MAILTRAP_PASS,
   verificationEmail: process.env.VERIFICATION_EMAIL,
   passwordResetLink: process.env.PASSWORD_RESET_LINK,
+  signInUrl: process.env.SIGN_IN_URL,
 };
 
 const config = Object.freeze(_config);
