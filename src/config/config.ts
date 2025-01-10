@@ -9,6 +9,7 @@ const _config = {
   verificationEmail: process.env.VERIFICATION_EMAIL,
   passwordResetLink: process.env.PASSWORD_RESET_LINK,
   signInUrl: process.env.SIGN_IN_URL,
+  jwtSecret: process.env.JWT_SECRET,
 };
 
 const config = Object.freeze(_config);

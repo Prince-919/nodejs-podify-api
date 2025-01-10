@@ -2,6 +2,7 @@ import {
   CreateUserSchema,
   TokenAndIDValidation,
   UpdatePasswordSchema,
+  SignInValidationSchema,
 } from "./validationSchema";
 import { generateToken } from "./helper";
 import {
@@ -14,6 +15,7 @@ export {
   CreateUserSchema,
   TokenAndIDValidation,
   UpdatePasswordSchema,
+  SignInValidationSchema,
   generateToken,
   sendVerificationMail,
   sendForgetPasswordLink,

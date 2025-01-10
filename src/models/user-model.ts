@@ -65,7 +65,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.comparePassword = async function (password) {
-  const result = await compare(this.password, password);
+  const result = await compare(password, this.password);
   return result;
 };
 

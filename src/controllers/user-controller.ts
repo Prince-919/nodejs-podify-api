@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import jwt from "jsonwebtoken";
 import { EmailVerificationToken, PasswordResetToken, User } from "@/models";
 import { CreateUser, VerifyEmailRequest } from "@/types";
 import {
@@ -125,6 +126,38 @@ class UserController {
 
     sendPassResetSuccessEmail(user.name, user.email);
     res.json({ message: "Password resets successfully." });
+  };
+
+  signIn: RequestHandler = async (req, res) => {
+    const { password, email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(403).json({ error: "Email/Password mismatch!" });
+      return;
+    }
+
+    const matched = await user.comparePassword(password);
+    if (!matched) {
+      res.status(403).json({ error: "Email/Password mismatch!" });
+      return;
+    }
+
+    const token = jwt.sign({ userId: user.id }, config.jwtSecret as string);
+    user.tokens.push(token);
+
+    await user.save();
+    res.json({
+      profile: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        verified: user.verified,
+        avatar: user.avatar?.url,
+        followers: user.followers.length,
+        followings: user.followings.length,
+      },
+      token,
+    });
   };
 }
 

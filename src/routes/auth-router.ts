@@ -3,6 +3,7 @@ import { userController } from "@/controllers";
 import { isValidPassResetToken, validate } from "@/middlewares";
 import {
   CreateUserSchema,
+  SignInValidationSchema,
   TokenAndIDValidation,
   UpdatePasswordSchema,
 } from "@/utils";
@@ -28,6 +29,11 @@ router.post(
   validate(UpdatePasswordSchema),
   isValidPassResetToken,
   userController.updatePassword
+);
+router.post(
+  "/sign-in",
+  validate(SignInValidationSchema),
+  userController.signIn
 );
 
 export default router;
