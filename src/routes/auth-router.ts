@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { userController } from "@/controllers";
-import { isValidPassResetToken, validate } from "@/middlewares";
+import { isValidPassResetToken, mustAuth, validate } from "@/middlewares";
 import {
   CreateUserSchema,
   SignInValidationSchema,
@@ -35,5 +35,8 @@ router.post(
   validate(SignInValidationSchema),
   userController.signIn
 );
+router.get("/is-auth", mustAuth, (req, res) => {
+  res.json({ profile: req.user });
+});
 
 export default router;
