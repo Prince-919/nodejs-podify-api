@@ -4,7 +4,7 @@ import {
   UpdatePasswordSchema,
   SignInValidationSchema,
 } from "./validationSchema";
-import { generateToken } from "./helper";
+import { generateToken, formatProfile } from "./helper";
 import {
   sendVerificationMail,
   sendForgetPasswordLink,
@@ -17,6 +17,7 @@ export {
   UpdatePasswordSchema,
   SignInValidationSchema,
   generateToken,
+  formatProfile,
   sendVerificationMail,
   sendForgetPasswordLink,
   sendPassResetSuccessEmail,

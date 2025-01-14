@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { EmailVerificationToken, PasswordResetToken, User } from "@/models";
 import { CreateUser, VerifyEmailRequest } from "@/types";
 import {
+  formatProfile,
   generateToken,
   sendForgetPasswordLink,
   sendPassResetSuccessEmail,
@@ -195,7 +196,11 @@ class UserController {
       user.avatar = { url: secure_url, publicId: public_id };
     }
     await user.save();
-    res.json({ avatar: user.avatar });
+    res.json({ profile: formatProfile(user) });
+  };
+
+  sendProfile: RequestHandler = async (req, res) => {
+    res.json({ profile: req.user });
   };
 }
 

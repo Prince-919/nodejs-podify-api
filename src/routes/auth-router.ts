@@ -42,9 +42,7 @@ router.post(
   validate(SignInValidationSchema),
   userController.signIn
 );
-router.get("/is-auth", mustAuth, (req, res) => {
-  res.json({ profile: req.user });
-});
+router.get("/is-auth", mustAuth, userController.sendProfile);
 router.post(
   "/update-profile",
   mustAuth,
