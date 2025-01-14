@@ -1,9 +1,13 @@
 import { Router } from "express";
 import { userController } from "@/controllers";
-import { isValidPassResetToken, mustAuth, validate } from "@/middlewares";
-import formidable from "formidable";
-import path from "path";
-import fs from "fs";
+import {
+  fileParser,
+  isValidPassResetToken,
+  mustAuth,
+  RequestWithFiles,
+  validate,
+} from "@/middlewares";
+
 import {
   CreateUserSchema,
   SignInValidationSchema,
@@ -41,28 +45,9 @@ router.post(
 router.get("/is-auth", mustAuth, (req, res) => {
   res.json({ profile: req.user });
 });
-router.post("/update-profile", async (req, res) => {
-  if (!req.headers["content-type"]?.startsWith("multipart/form-data;")) {
-    res.status(422).json({ error: "Only accepts form-data!" });
-    return;
-  }
-  const dir = path.join(__dirname, "../public/profiles");
-
-  try {
-    await fs.readdirSync(dir);
-  } catch (error) {
-    await fs.mkdirSync(dir);
-  }
-
-  const form = formidable({
-    uploadDir: dir,
-    filename(name, ext, part, form) {
-      return Date.now() + "_" + part.originalFilename;
-    },
-  });
-  form.parse(req, (err, fields, files) => {
-    res.json({ uploaded: true });
-  });
+router.post("/update-profile", fileParser, (req: RequestWithFiles, res) => {
+  console.log(req.files);
+  res.json({ ok: true });
 });
 
 export default router;
