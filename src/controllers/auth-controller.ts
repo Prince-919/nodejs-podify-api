@@ -202,6 +202,22 @@ class UserController {
   sendProfile: RequestHandler = async (req, res) => {
     res.json({ profile: req.user });
   };
+
+  logOut: RequestHandler = async (req, res) => {
+    const { fromAll } = req.query;
+    const token = req.token;
+    const user = await User.findById(req.user?.id);
+    if (!user) throw new Error("something went wrong, user not found!");
+
+    if (req.token === "yes") {
+      user.tokens = [];
+    } else {
+      user.tokens = user.tokens.filter((t) => t !== token);
+    }
+
+    await user.save();
+    res.json({ success: true });
+  };
 }
 
 const userController = new UserController();

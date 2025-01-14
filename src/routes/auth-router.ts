@@ -1,10 +1,9 @@
 import { Router } from "express";
-import { userController } from "@/controllers";
+import { authController } from "@/controllers";
 import {
   fileParser,
   isValidPassResetToken,
   mustAuth,
-  RequestWithFiles,
   validate,
 } from "@/middlewares";
 
@@ -17,37 +16,38 @@ import {
 
 const router = Router();
 
-router.post("/create", validate(CreateUserSchema), userController.create);
+router.post("/create", validate(CreateUserSchema), authController.create);
 router.post(
   "/verify-email",
   validate(TokenAndIDValidation),
-  userController.verifyEmail
+  authController.verifyEmail
 );
-router.post("/re-verify-email", userController.sendVerificationToken);
-router.post("/forget-password", userController.generateForgetPasswordLink);
+router.post("/re-verify-email", authController.sendVerificationToken);
+router.post("/forget-password", authController.generateForgetPasswordLink);
 router.post(
   "/verify-pass-reset-token",
   validate(TokenAndIDValidation),
   isValidPassResetToken,
-  userController.grantValid
+  authController.grantValid
 );
 router.post(
   "/update-password",
   validate(UpdatePasswordSchema),
   isValidPassResetToken,
-  userController.updatePassword
+  authController.updatePassword
 );
 router.post(
   "/sign-in",
   validate(SignInValidationSchema),
-  userController.signIn
+  authController.signIn
 );
-router.get("/is-auth", mustAuth, userController.sendProfile);
+router.get("/is-auth", mustAuth, authController.sendProfile);
 router.post(
   "/update-profile",
   mustAuth,
   fileParser,
-  userController.updateProfile
+  authController.updateProfile
 );
+router.post("/log-out", mustAuth, authController.logOut);
 
 export default router;
