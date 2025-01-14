@@ -10,6 +10,9 @@ const _config = {
   passwordResetLink: process.env.PASSWORD_RESET_LINK,
   signInUrl: process.env.SIGN_IN_URL,
   jwtSecret: process.env.JWT_SECRET,
+  cloudName: process.env.CLOUD_NAME,
+  cloudKey: process.env.CLOUD_KEY,
+  cloudSecret: process.env.CLOUD_SECRET,
 };
 
 const config = Object.freeze(_config);
