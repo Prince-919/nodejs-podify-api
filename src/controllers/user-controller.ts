@@ -180,6 +180,9 @@ class UserController {
     user.name = name;
 
     if (avatar) {
+      if (user.avatar?.publicId) {
+        await cloudinary.uploader.destroy(user.avatar?.publicId);
+      }
       const { secure_url, public_id } = await cloudinary.uploader.upload(
         avatar.filepath,
         {
