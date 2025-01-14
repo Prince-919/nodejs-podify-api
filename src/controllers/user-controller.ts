@@ -11,6 +11,9 @@ import {
 import { isValidObjectId } from "mongoose";
 import crypto from "crypto";
 import { config } from "@/config";
+import { RequestWithFiles } from "@/middlewares";
+import formidable from "formidable";
+import cloudinary from "@/cloud";
 
 class UserController {
   create: RequestHandler = async (req: CreateUser, res) => {
@@ -158,6 +161,38 @@ class UserController {
       },
       token,
     });
+  };
+
+  updateProfile: RequestHandler = async (req: RequestWithFiles, res) => {
+    const { name } = req.body;
+    const avatar = req.files?.avatar as formidable.File;
+
+    const user = await User.findById(req.user?.id);
+    if (!user) throw new Error("Something went wrong, user not found!");
+    if (typeof name !== "string") {
+      res.status(422).json({ error: "Invalid name!" });
+      return;
+    }
+    if (name.trim().length < 3) {
+      res.status(422).json({ error: "Invalid name!" });
+      return;
+    }
+    user.name = name;
+
+    if (avatar) {
+      const { secure_url, public_id } = await cloudinary.uploader.upload(
+        avatar.filepath,
+        {
+          width: 300,
+          height: 200,
+          crop: "thumb",
+          gravity: "face",
+        }
+      );
+      user.avatar = { url: secure_url, publicId: public_id };
+    }
+    await user.save();
+    res.json({ avatar: user.avatar });
   };
 }
 

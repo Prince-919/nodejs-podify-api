@@ -45,9 +45,11 @@ router.post(
 router.get("/is-auth", mustAuth, (req, res) => {
   res.json({ profile: req.user });
 });
-router.post("/update-profile", fileParser, (req: RequestWithFiles, res) => {
-  console.log(req.files);
-  res.json({ ok: true });
-});
+router.post(
+  "/update-profile",
+  mustAuth,
+  fileParser,
+  userController.updateProfile
+);
 
 export default router;
