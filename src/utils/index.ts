@@ -10,12 +10,14 @@ import {
   sendForgetPasswordLink,
   sendPassResetSuccessEmail,
 } from "./mail";
+import { categories } from "./audio-category";
 
 export {
   CreateUserSchema,
   TokenAndIDValidation,
   UpdatePasswordSchema,
   SignInValidationSchema,
+  categories,
   generateToken,
   formatProfile,
   sendVerificationMail,

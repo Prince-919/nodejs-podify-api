@@ -3,7 +3,9 @@ import {
   EmailVerificationTokenDocument,
   Methods,
 } from "./email-verification-token-type";
-import { PasswordResetTokenDocument } from "./password-reset-token";
+import { PasswordResetTokenDocument } from "./password-reset-token-type";
+import { AudioDocument } from "./audio-type";
+import { categoriesTypes } from "./audio-category-type";
 
 export {
   UserDocument,
@@ -12,4 +14,6 @@ export {
   Methods,
   VerifyEmailRequest,
   PasswordResetTokenDocument,
+  categoriesTypes,
+  AudioDocument,
 };
