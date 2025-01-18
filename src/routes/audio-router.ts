@@ -14,4 +14,13 @@ router.post(
   audioController.createAudio
 );
 
+router.patch(
+  "/:audioId",
+  mustAuth,
+  isVerified,
+  fileParser,
+  validate(AudioValidationSchema),
+  audioController.updateAudio
+);
+
 export default router;
