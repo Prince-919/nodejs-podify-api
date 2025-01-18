@@ -4,7 +4,7 @@ import {
   Methods,
 } from "./email-verification-token-type";
 import { PasswordResetTokenDocument } from "./password-reset-token-type";
-import { AudioDocument } from "./audio-type";
+import { AudioDocument, CreateAudioRequest } from "./audio-type";
 import { categoriesTypes } from "./audio-category-type";
 
 export {
@@ -16,4 +16,5 @@ export {
   PasswordResetTokenDocument,
   categoriesTypes,
   AudioDocument,
+  CreateAudioRequest,
 };

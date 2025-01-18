@@ -1,5 +1,6 @@
 import { ObjectId } from "mongoose";
 import { categoriesTypes } from "./audio-category-type";
+import { RequestWithFiles } from "@/middlewares";
 
 export interface AudioDocument {
   title: string;
@@ -15,4 +16,12 @@ export interface AudioDocument {
   };
   likes: ObjectId[];
   category: categoriesTypes;
+}
+
+export interface CreateAudioRequest extends RequestWithFiles {
+  body: {
+    title: string;
+    about: string;
+    category: categoriesTypes;
+  };
 }

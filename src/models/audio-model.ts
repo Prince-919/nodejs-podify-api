@@ -42,7 +42,6 @@ const audioSchema = new Schema<AudioDocument>(
   { timestamps: true }
 );
 
-const Audio =
-  models.Audio || (model("Audio", audioSchema) as Model<AudioDocument>);
+const Audio = models.Audio || model("Audio", audioSchema);
 
-export default Audio;
+export default Audio as Model<AudioDocument>;
