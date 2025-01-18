@@ -3,6 +3,7 @@ import {
   TokenAndIDValidation,
   UpdatePasswordSchema,
   SignInValidationSchema,
+  AudioValidationSchema,
 } from "./validationSchema";
 import { generateToken, formatProfile } from "./helper";
 import {
@@ -17,6 +18,7 @@ export {
   TokenAndIDValidation,
   UpdatePasswordSchema,
   SignInValidationSchema,
+  AudioValidationSchema,
   categories,
   generateToken,
   formatProfile,
