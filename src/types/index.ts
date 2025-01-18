@@ -6,6 +6,7 @@ import {
 import { PasswordResetTokenDocument } from "./password-reset-token-type";
 import { AudioDocument, CreateAudioRequest } from "./audio-type";
 import { categoriesTypes } from "./audio-category-type";
+import { FavoriteDocument } from "./favorite-type";
 
 export {
   UserDocument,
@@ -17,4 +18,5 @@ export {
   categoriesTypes,
   AudioDocument,
   CreateAudioRequest,
+  FavoriteDocument,
 };
