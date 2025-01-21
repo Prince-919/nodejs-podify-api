@@ -45,6 +45,18 @@ class FavoriteController {
       }
       status = "added";
     }
+
+    if (status === "added") {
+      await Audio.findByIdAndUpdate(audioId, {
+        $addToSet: { likes: req.user?.id },
+      });
+    }
+
+    if (status === "removed") {
+      await Audio.findByIdAndUpdate(audioId, {
+        $pull: { likes: req.user?.id },
+      });
+    }
     res.json({ status });
   };
 }
