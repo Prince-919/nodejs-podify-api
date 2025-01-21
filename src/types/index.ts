@@ -4,7 +4,11 @@ import {
   Methods,
 } from "./email-verification-token-type";
 import { PasswordResetTokenDocument } from "./password-reset-token-type";
-import { AudioDocument, CreateAudioRequest } from "./audio-type";
+import {
+  AudioDocument,
+  CreateAudioRequest,
+  PopulateFavList,
+} from "./audio-type";
 import { categoriesTypes } from "./audio-category-type";
 import { FavoriteDocument } from "./favorite-type";
 
@@ -19,4 +23,5 @@ export {
   AudioDocument,
   CreateAudioRequest,
   FavoriteDocument,
+  PopulateFavList,
 };

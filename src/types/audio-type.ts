@@ -2,10 +2,11 @@ import { ObjectId } from "mongoose";
 import { categoriesTypes } from "./audio-category-type";
 import { RequestWithFiles } from "@/middlewares";
 
-export interface AudioDocument {
+export interface AudioDocument<T = ObjectId> {
+  _id: ObjectId;
   title: string;
   about: string;
-  owner: ObjectId;
+  owner: T;
   file: {
     url: string;
     publicId: string;
@@ -25,3 +26,5 @@ export interface CreateAudioRequest extends RequestWithFiles {
     category: categoriesTypes;
   };
 }
+
+export type PopulateFavList = AudioDocument<{ _id: ObjectId; name: string }>;

@@ -1,4 +1,5 @@
 import { Audio, Favorite } from "@/models";
+import { PopulateFavList } from "@/types";
 import { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
 
@@ -58,6 +59,35 @@ class FavoriteController {
       });
     }
     res.json({ status });
+  };
+
+  getFavorites: RequestHandler = async (req, res) => {
+    const userID = req.user?.id;
+
+    const favorite = await Favorite.findOne({ owner: userID }).populate<{
+      items: PopulateFavList[];
+    }>({
+      path: "items",
+      populate: {
+        path: "owner",
+      },
+    });
+
+    if (!favorite) {
+      res.json({ audios: [] });
+      return;
+    }
+    const audios = favorite.items.map((item) => {
+      return {
+        id: item._id,
+        title: item.title,
+        category: item.category,
+        file: item.file.url,
+        poster: item.poster?.url,
+        owner: { name: item.owner.name, id: item.owner._id },
+      };
+    });
+    res.json({ audios });
   };
 }
 
