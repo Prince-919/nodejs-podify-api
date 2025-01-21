@@ -89,6 +89,22 @@ class FavoriteController {
     });
     res.json({ audios });
   };
+
+  getIsFavorite: RequestHandler = async (req, res) => {
+    const audioId = req.query.audioId as string;
+
+    if (!isValidObjectId(audioId)) {
+      res.status(422).json({ error: "Invalid audio id!" });
+      return;
+    }
+
+    const favorite = await Favorite.findOne({
+      owner: req.user?.id,
+      items: audioId,
+    });
+
+    res.json({ result: favorite ? true : false });
+  };
 }
 
 const favoriteController = new FavoriteController();
