@@ -11,7 +11,7 @@ import {
 } from "./audio-type";
 import { categoriesTypes } from "./audio-category-type";
 import { FavoriteDocument } from "./favorite-type";
-import { PlaylistDocument } from "./playlist-type";
+import { PlaylistDocument, CreatePlaylistRequest } from "./playlist-type";
 
 export {
   UserDocument,
@@ -26,4 +26,5 @@ export {
   FavoriteDocument,
   PopulateFavList,
   PlaylistDocument,
+  CreatePlaylistRequest,
 };
