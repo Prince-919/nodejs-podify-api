@@ -27,6 +27,11 @@ class PlaylistController {
       },
     });
   };
+
+  updatePlaylist: RequestHandler = async (
+    req: CreatePlaylistRequest,
+    res
+  ) => {};
 }
 
 const playlistController = new PlaylistController();

@@ -5,6 +5,7 @@ import {
   SignInValidationSchema,
   AudioValidationSchema,
   NewPlaylistValidationSchema,
+  OldPlaylistValidationSchema,
 } from "./validationSchema";
 import { generateToken, formatProfile } from "./helper";
 import {
@@ -22,6 +23,7 @@ export {
   AudioValidationSchema,
   categories,
   NewPlaylistValidationSchema,
+  OldPlaylistValidationSchema,
   generateToken,
   formatProfile,
   sendVerificationMail,
