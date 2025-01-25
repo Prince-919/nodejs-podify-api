@@ -22,5 +22,6 @@ router.patch(
   playlistController.updatePlaylist
 );
 router.delete("/", mustAuth, playlistController.removePlaylist);
+router.get("/by-profile", mustAuth, playlistController.getPlaylistByProfile);
 
 export default router;

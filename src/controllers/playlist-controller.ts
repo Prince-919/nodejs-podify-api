@@ -104,6 +104,23 @@ class PlaylistController {
     }
     res.json({ success: true });
   };
+
+  getPlaylistByProfile: RequestHandler = async (req, res) => {
+    const data = await Playlist.find({
+      owner: req.user?.id,
+      visibility: { $ne: "auto" },
+    }).sort("-createdAt");
+
+    const playlist = await data.map((item) => {
+      return {
+        id: item._id,
+        title: item.title,
+        itemsCount: item.items.length,
+        visibility: item.visibility,
+      };
+    });
+    res.json({ playlist });
+  };
 }
 
 const playlistController = new PlaylistController();
