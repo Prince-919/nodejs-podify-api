@@ -21,5 +21,6 @@ router.patch(
   validate(OldPlaylistValidationSchema),
   playlistController.updatePlaylist
 );
+router.delete("/", mustAuth, playlistController.removePlaylist);
 
 export default router;
