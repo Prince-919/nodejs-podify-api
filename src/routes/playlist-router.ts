@@ -23,5 +23,6 @@ router.patch(
 );
 router.delete("/", mustAuth, playlistController.removePlaylist);
 router.get("/by-profile", mustAuth, playlistController.getPlaylistByProfile);
+router.get("/:playlistId", mustAuth, playlistController.getAudios);
 
 export default router;
