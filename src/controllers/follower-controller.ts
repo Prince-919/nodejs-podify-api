@@ -80,6 +80,11 @@ class FollowerController {
     const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
     const { profileId } = req.params;
 
+    if (!profileId) {
+      res.status(422).json({ error: "Invalid profile id!" });
+      return;
+    }
+
     const data = await Audio.find({ owner: profileId })
       .skip(parseInt(limit) * parseInt(pageNo))
       .limit(parseInt(limit))
@@ -99,6 +104,29 @@ class FollowerController {
     });
 
     res.json({ audios });
+  };
+
+  getPublicProfile: RequestHandler = async (req, res) => {
+    const { profileId } = req.params;
+    if (!isValidObjectId(profileId)) {
+      res.status(422).json({ error: "Invalid profile id!" });
+      return;
+    }
+
+    const user = await User.findById(profileId);
+    if (!user) {
+      res.status(422).json({ error: "User not found!" });
+      return;
+    }
+
+    res.json({
+      profile: {
+        id: user._id,
+        name: user.name,
+        followers: user.followers.length,
+        avatar: user.avatar?.url,
+      },
+    });
   };
 }
 
