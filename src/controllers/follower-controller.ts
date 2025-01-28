@@ -1,4 +1,4 @@
-import { Audio, User } from "@/models";
+import { Audio, User, Playlist } from "@/models";
 import { paginationQuery, AudioDocument } from "@/types";
 import { RequestHandler } from "express";
 import { isValidObjectId, ObjectId } from "mongoose";
@@ -126,6 +126,40 @@ class FollowerController {
         followers: user.followers.length,
         avatar: user.avatar?.url,
       },
+    });
+  };
+
+  getPublicPlaylist: RequestHandler = async (req, res) => {
+    const { profileId } = req.params;
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+
+    if (!isValidObjectId(profileId)) {
+      res.status(422).json({ error: "Invalid profile id!" });
+      return;
+    }
+
+    const playlist = await Playlist.find({
+      owner: profileId,
+      visibility: "public",
+    })
+      .skip(parseInt(limit) * parseInt(pageNo))
+      .limit(parseInt(limit))
+      .sort("-createdAt");
+
+    if (!playlist) {
+      res.json({ playlist: [] });
+      return;
+    }
+
+    res.json({
+      playlist: playlist.map((item) => {
+        return {
+          id: item._id,
+          title: item.title,
+          itemsCount: item.items.length,
+          visibility: item.visibility,
+        };
+      }),
     });
   };
 }
