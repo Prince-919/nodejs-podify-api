@@ -10,5 +10,6 @@ router.post(
   followerController.updateFollower
 );
 router.get("/uploads", mustAuth, followerController.getUploads);
+router.get("/uploads/:profileId", followerController.getPublicUploads);
 
 export default router;

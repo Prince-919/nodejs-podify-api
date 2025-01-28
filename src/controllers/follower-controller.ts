@@ -1,7 +1,7 @@
 import { Audio, User } from "@/models";
-import { paginationQuery } from "@/types";
+import { paginationQuery, AudioDocument } from "@/types";
 import { RequestHandler } from "express";
-import { isValidObjectId } from "mongoose";
+import { isValidObjectId, ObjectId } from "mongoose";
 
 class FollowerController {
   updateFollower: RequestHandler = async (req, res) => {
@@ -70,6 +70,31 @@ class FollowerController {
         poster: item.poster?.url,
         date: item.createdAt,
         owner: { name: req.user?.name, id: req.user?.id },
+      };
+    });
+
+    res.json({ audios });
+  };
+
+  getPublicUploads: RequestHandler = async (req, res) => {
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+    const { profileId } = req.params;
+
+    const data = await Audio.find({ owner: profileId })
+      .skip(parseInt(limit) * parseInt(pageNo))
+      .limit(parseInt(limit))
+      .sort("-createdAt")
+      .populate<AudioDocument<{ name: string; _id: ObjectId }>>("owner");
+
+    const audios = await data.map((item) => {
+      return {
+        id: item._id,
+        title: item.title,
+        about: item.about,
+        file: item.file.url,
+        poster: item.poster?.url,
+        date: item.createdAt,
+        owner: { name: item.owner.name, id: item.owner._id },
       };
     });
 
