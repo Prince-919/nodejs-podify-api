@@ -17,6 +17,7 @@ export interface AudioDocument<T = ObjectId> {
   };
   likes: ObjectId[];
   category: categoriesTypes;
+  createdAt: Date;
 }
 
 export interface CreateAudioRequest extends RequestWithFiles {

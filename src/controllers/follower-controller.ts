@@ -1,4 +1,5 @@
-import { User } from "@/models";
+import { Audio, User } from "@/models";
+import { paginationQuery } from "@/types";
 import { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
 
@@ -50,6 +51,29 @@ class FollowerController {
       );
     }
     res.json({ status });
+  };
+
+  getUploads: RequestHandler = async (req, res) => {
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+
+    const data = await Audio.find({ owner: req.user?.id })
+      .skip(parseInt(limit) * parseInt(pageNo))
+      .limit(parseInt(limit))
+      .sort("-createdAt");
+
+    const audios = await data.map((item) => {
+      return {
+        id: item._id,
+        title: item.title,
+        about: item.about,
+        file: item.file.url,
+        poster: item.poster?.url,
+        date: item.createdAt,
+        owner: { name: req.user?.name, id: req.user?.id },
+      };
+    });
+
+    res.json({ audios });
   };
 }
 

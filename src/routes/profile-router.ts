@@ -9,5 +9,6 @@ router.post(
   mustAuth,
   followerController.updateFollower
 );
+router.get("/uploads", mustAuth, followerController.getUploads);
 
 export default router;
