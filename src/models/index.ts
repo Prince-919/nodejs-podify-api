@@ -4,3 +4,4 @@ export { default as PasswordResetToken } from "./password-reset-token";
 export { default as Audio } from "./audio-model";
 export { default as Favorite } from "./favorite-model";
 export { default as Playlist } from "./playlist-model";
+export { default as History } from "./history-model";

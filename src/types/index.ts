@@ -17,6 +17,7 @@ import {
   UpdatePlaylistRequest,
 } from "./playlist-type";
 import { paginationQuery } from "./misc-type";
+import { HistoryDocument } from "./history-type";
 
 export {
   UserDocument,
@@ -34,4 +35,5 @@ export {
   CreatePlaylistRequest,
   UpdatePlaylistRequest,
   paginationQuery,
+  HistoryDocument,
 };
