@@ -12,5 +12,6 @@ router.post(
   historyController.updateHistory
 );
 router.delete("/", mustAuth, historyController.removeHistory);
+router.get("/", mustAuth, historyController.getHistories);
 
 export default router;
