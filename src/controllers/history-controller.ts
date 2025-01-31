@@ -46,14 +46,14 @@ class HistoryController {
       {
         $project: {
           _id: 0,
-          audio: "$all.audio",
+          audioId: "$all.audio",
         },
       },
     ]);
 
-    const sameDayHistory = histories.find((item) => {
-      if (item.audio.toString() === audio) return item;
-    });
+    const sameDayHistory = histories.find(
+      ({ audioId }) => audioId.toString() === audio
+    );
 
     if (sameDayHistory) {
       await History.findOneAndUpdate(
@@ -75,6 +75,26 @@ class HistoryController {
       });
     }
 
+    res.json({ success: true });
+  };
+
+  removeHistory: RequestHandler = async (req, res) => {
+    const removeAll = req.query.all === "yes";
+
+    if (removeAll) {
+      await History.findOneAndDelete({ owner: req.user?.id });
+      res.json({ success: true });
+      return;
+    }
+
+    const histories = req.query.histories as string;
+    const ids = JSON.parse(histories) as string[];
+    await History.findOneAndUpdate(
+      { owner: req.user?.id },
+      {
+        $pull: { all: { _id: ids } },
+      }
+    );
     res.json({ success: true });
   };
 }
