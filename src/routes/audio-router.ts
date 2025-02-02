@@ -23,4 +23,6 @@ router.patch(
   audioController.updateAudio
 );
 
+router.get("/latest", audioController.getLatestUploads);
+
 export default router;

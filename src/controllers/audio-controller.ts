@@ -1,4 +1,4 @@
-import { CreateAudioRequest } from "@/types";
+import { CreateAudioRequest, PopulateFavList } from "@/types";
 import { RequestHandler } from "express";
 import formidable from "formidable";
 import cloudinary from "@/cloud";
@@ -102,6 +102,26 @@ class AudioController {
         poster: audio.poster?.url,
       },
     });
+  };
+
+  getLatestUploads: RequestHandler = async (req, res) => {
+    const list = await Audio.find()
+      .sort("-createdAt")
+      .limit(10)
+      .populate<PopulateFavList>("owner");
+
+    const audios = list.map((item) => {
+      return {
+        id: item._id,
+        title: item.title,
+        about: item.about,
+        category: item.category,
+        file: item.file.url,
+        poster: item.poster?.url,
+        owner: { name: item.owner.name, id: item.owner._id },
+      };
+    });
+    res.json({ audios });
   };
 }
 
