@@ -13,5 +13,6 @@ router.post(
 );
 router.delete("/", mustAuth, historyController.removeHistory);
 router.get("/", mustAuth, historyController.getHistories);
+router.get("/recently-played", mustAuth, historyController.getRecentlyPlayed);
 
 export default router;
