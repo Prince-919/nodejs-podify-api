@@ -162,6 +162,45 @@ class FollowerController {
       }),
     });
   };
+
+  getRecommendedByProfile: RequestHandler = async (req, res) => {
+    const user = req.user;
+
+    if (user) {
+    }
+
+    const audios = await Audio.aggregate([
+      { $match: { _id: { $exists: true } } },
+      {
+        $sort: {
+          "likes.count": -1,
+        },
+      },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+      { $unwind: "$owner" },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          title: "$title",
+          about: "$about",
+          category: "$category",
+          file: "$file.url",
+          poster: "$poster.url",
+          owner: { name: "$owner.name", id: "$owner._id" },
+        },
+      },
+    ]);
+    res.json({ audios });
+  };
 }
 
 const followerController = new FollowerController();
