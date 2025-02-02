@@ -1,7 +1,8 @@
-import { Audio, User, Playlist } from "@/models";
+import { Audio, User, Playlist, History } from "@/models";
 import { paginationQuery, AudioDocument } from "@/types";
 import { RequestHandler } from "express";
-import { isValidObjectId, ObjectId } from "mongoose";
+import { isValidObjectId, ObjectId, PipelineStage } from "mongoose";
+import moment from "moment";
 
 class FollowerController {
   updateFollower: RequestHandler = async (req, res) => {
@@ -166,11 +167,47 @@ class FollowerController {
   getRecommendedByProfile: RequestHandler = async (req, res) => {
     const user = req.user;
 
+    let matchOptions: PipelineStage.Match = {
+      $match: { _id: { $exists: true } },
+    };
+
     if (user) {
+      const usersPreviousHistory = await History.aggregate([
+        { $match: { owner: user.id } },
+        { $unwind: "$all" },
+        {
+          $match: {
+            "all.date": {
+              $gte: moment().subtract(30, "days").toDate(),
+            },
+          },
+        },
+        { $group: { _id: "$all.audio" } },
+        {
+          $lookup: {
+            from: "audios",
+            localField: "_id",
+            foreignField: "_id",
+            as: "audioData",
+          },
+        },
+        { $unwind: "$audioData" },
+        {
+          $group: { _id: null, category: { $addToSet: "$audioData.category" } },
+        },
+      ]);
+
+      const categories = usersPreviousHistory[0].category;
+
+      if (categories.length) {
+        matchOptions = {
+          $match: { category: { $in: categories } },
+        };
+      }
     }
 
     const audios = await Audio.aggregate([
-      { $match: { _id: { $exists: true } } },
+      matchOptions,
       {
         $sort: {
           "likes.count": -1,
