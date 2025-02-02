@@ -24,6 +24,5 @@ router.patch(
 );
 
 router.get("/latest", audioController.getLatestUploads);
-router.get("/test", audioController.testFun);
 
 export default router;

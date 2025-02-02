@@ -1,6 +1,7 @@
 import express from "express";
 import { config, dbConnect } from "@/config";
 import routes from "./routes";
+import "./utils/schedule";
 
 const app = express();
 
