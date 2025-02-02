@@ -236,7 +236,7 @@ class FollowerController {
         },
       },
     ]);
-    res.json({ audios });
+    res.json(audios);
   };
 }
 
