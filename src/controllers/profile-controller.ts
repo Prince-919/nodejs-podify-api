@@ -424,8 +424,13 @@ class FollowerController {
       return;
     }
 
-    const [result] = await Playlist.aggregate([
-      { $match: { _id: new Types.ObjectId(playlistId) } },
+    const aggregatationLogic = [
+      {
+        $match: {
+          _id: new Types.ObjectId(playlistId),
+          visibility: { $ne: "private" },
+        },
+      },
       {
         $project: {
           items: {
@@ -484,9 +489,16 @@ class FollowerController {
           audios: "$$ROOT.audios",
         },
       },
-    ]);
+    ];
 
-    res.json(result);
+    const [playlistResult] = await Playlist.aggregate(aggregatationLogic);
+    if (!playlistResult) {
+      const [autoPlaylistResult] = await Playlist.aggregate(aggregatationLogic);
+      res.json({ list: autoPlaylistResult });
+      return;
+    }
+
+    res.json({ list: playlistResult });
   };
 }
 
