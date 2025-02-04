@@ -26,5 +26,6 @@ router.get(
   profileController.getFollowersProfilePublic
 );
 router.get("/followings", mustAuth, profileController.getFollowingsProfile);
+router.get("/playlist-audios/:playlistId", profileController.getPlaylistAudios);
 
 export default router;
