@@ -500,6 +500,93 @@ class FollowerController {
 
     res.json({ list: playlistResult });
   };
+
+  getPrivatePlaylistAudios: RequestHandler = async (req, res) => {
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+
+    const { playlistId } = req.params;
+
+    if (!isValidObjectId(playlistId)) {
+      res.status(422).json({ error: "Invalid playlist id!" });
+      return;
+    }
+
+    const aggregatationLogic = [
+      {
+        $match: {
+          _id: new Types.ObjectId(playlistId),
+          owner: req.user?.id,
+        },
+      },
+      {
+        $project: {
+          items: {
+            $slice: [
+              "$items",
+              parseInt(pageNo) * parseInt(limit),
+              parseInt(limit),
+            ],
+          },
+          title: "$title",
+        },
+      },
+      { $unwind: "$items" },
+      {
+        $lookup: {
+          from: "audios",
+          localField: "items",
+          foreignField: "_id",
+          as: "audios",
+        },
+      },
+      { $unwind: "$audios" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "audios.owner",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      { $unwind: "$userInfo" },
+      {
+        $group: {
+          _id: {
+            id: "$_id",
+            title: "$title",
+          },
+          audios: {
+            $push: {
+              id: "$audios._id",
+              title: "$audios.title",
+              about: "$audios.about",
+              category: "$audios.category",
+              file: "$audios.file.url",
+              poster: "$audios.poster.url",
+              owner: { name: "$userInfo.name", id: "$userInfo._id" },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id.id",
+          title: "$_id.title",
+          audios: "$$ROOT.audios",
+        },
+      },
+    ];
+
+    const [playlistResult] = await Playlist.aggregate(aggregatationLogic);
+    if (!playlistResult) {
+      const [autoPlaylistResult] = await Playlist.aggregate(aggregatationLogic);
+      res.json({ list: autoPlaylistResult });
+      return;
+    }
+
+    res.json({ list: playlistResult });
+  };
 }
 
 const followerController = new FollowerController();
