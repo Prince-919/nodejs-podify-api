@@ -7,7 +7,7 @@ import {
 } from "@/models";
 import { paginationQuery, AudioDocument } from "@/types";
 import { RequestHandler } from "express";
-import { isValidObjectId, ObjectId, PipelineStage } from "mongoose";
+import { isValidObjectId, ObjectId, PipelineStage, Types } from "mongoose";
 import { getUsersPreviousHistory } from "@/utils";
 
 class FollowerController {
@@ -360,6 +360,58 @@ class FollowerController {
       return;
     }
     res.json({ followings: result.followings });
+  };
+
+  getFollowersProfilePublic: RequestHandler = async (req, res) => {
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+    const { profileId } = req.params;
+
+    if (!isValidObjectId(profileId)) {
+      res.status(422).json({ error: "Invalid profile id!" });
+      return;
+    }
+
+    const [result] = await User.aggregate([
+      { $match: { _id: new Types.ObjectId(profileId) } },
+      {
+        $project: {
+          followers: {
+            $slice: [
+              "$followers",
+              parseInt(pageNo) * parseInt(limit),
+              parseInt(limit),
+            ],
+          },
+        },
+      },
+      { $unwind: "$followers" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "followers",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      { $unwind: "$userInfo" },
+      {
+        $group: {
+          _id: null,
+          followers: {
+            $push: {
+              id: "$userInfo._id",
+              name: "$userInfo.name",
+              avatar: "$userInfo.avatar.url",
+            },
+          },
+        },
+      },
+    ]);
+    if (!result) {
+      res.json({ followers: [] });
+      return;
+    }
+    res.json({ followers: result.followers });
   };
 }
 
