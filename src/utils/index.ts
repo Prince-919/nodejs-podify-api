@@ -8,7 +8,11 @@ import {
   OldPlaylistValidationSchema,
   UpdateHistorySchema,
 } from "./validationSchema";
-import { generateToken, formatProfile } from "./helper";
+import {
+  generateToken,
+  formatProfile,
+  getUsersPreviousHistory,
+} from "./helper";
 import {
   sendVerificationMail,
   sendForgetPasswordLink,
@@ -31,4 +35,5 @@ export {
   sendVerificationMail,
   sendForgetPasswordLink,
   sendPassResetSuccessEmail,
+  getUsersPreviousHistory,
 };
