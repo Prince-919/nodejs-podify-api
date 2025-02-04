@@ -315,6 +315,52 @@ class FollowerController {
     }
     res.json({ followers: result.followers });
   };
+
+  getFollowingsProfile: RequestHandler = async (req, res) => {
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+
+    const [result] = await User.aggregate([
+      { $match: { _id: req.user?.id } },
+      {
+        $project: {
+          followings: {
+            $slice: [
+              "$followings",
+              parseInt(pageNo) * parseInt(limit),
+              parseInt(limit),
+            ],
+          },
+        },
+      },
+      { $unwind: "$followings" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "followings",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      { $unwind: "$userInfo" },
+      {
+        $group: {
+          _id: null,
+          followings: {
+            $push: {
+              id: "$userInfo._id",
+              name: "$userInfo.name",
+              avatar: "$userInfo.avatar.url",
+            },
+          },
+        },
+      },
+    ]);
+    if (!result) {
+      res.json({ followings: [] });
+      return;
+    }
+    res.json({ followings: result.followings });
+  };
 }
 
 const followerController = new FollowerController();
