@@ -587,6 +587,22 @@ class FollowerController {
 
     res.json({ list: playlistResult });
   };
+
+  getIsFollowing: RequestHandler = async (req, res) => {
+    const { profileId } = req.params;
+
+    if (!isValidObjectId(profileId)) {
+      res.status(422).json({ error: "Invalid profile id!" });
+      return;
+    }
+
+    const user = await User.findOne({
+      _id: profileId,
+      followers: req.user?.id,
+    });
+
+    res.json({ status: user ? true : false });
+  };
 }
 
 const followerController = new FollowerController();
