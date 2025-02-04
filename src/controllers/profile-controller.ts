@@ -269,6 +269,52 @@ class FollowerController {
     });
     res.json({ playlist: finalList });
   };
+
+  getFollowersProfile: RequestHandler = async (req, res) => {
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+
+    const [result] = await User.aggregate([
+      { $match: { _id: req.user?.id } },
+      {
+        $project: {
+          followers: {
+            $slice: [
+              "$followers",
+              parseInt(pageNo) * parseInt(limit),
+              parseInt(limit),
+            ],
+          },
+        },
+      },
+      { $unwind: "$followers" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "followers",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      { $unwind: "$userInfo" },
+      {
+        $group: {
+          _id: null,
+          followers: {
+            $push: {
+              id: "$userInfo._id",
+              name: "$userInfo.name",
+              avatar: "$userInfo.avatar.url",
+            },
+          },
+        },
+      },
+    ]);
+    if (!result) {
+      res.json({ followers: [] });
+      return;
+    }
+    res.json({ followers: result.followers });
+  };
 }
 
 const followerController = new FollowerController();
