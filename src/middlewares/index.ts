@@ -1,5 +1,6 @@
 import fileParser, { RequestWithFiles } from "./file-parser-middleware";
 import { validate } from "./validator-middleware";
+import { errorHandler } from "./error";
 import {
   isValidPassResetToken,
   mustAuth,
@@ -14,5 +15,6 @@ export {
   isAuth,
   fileParser,
   isVerified,
+  errorHandler,
   RequestWithFiles,
 };
