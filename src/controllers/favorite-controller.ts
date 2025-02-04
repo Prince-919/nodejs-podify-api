@@ -1,5 +1,5 @@
 import { Audio, Favorite } from "@/models";
-import { PopulateFavList } from "@/types";
+import { paginationQuery, PopulateFavList } from "@/types";
 import { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
 
@@ -63,31 +63,55 @@ class FavoriteController {
 
   getFavorites: RequestHandler = async (req, res) => {
     const userID = req.user?.id;
+    const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
 
-    const favorite = await Favorite.findOne({ owner: userID }).populate<{
-      items: PopulateFavList[];
-    }>({
-      path: "items",
-      populate: {
-        path: "owner",
+    const favorites = await Favorite.aggregate([
+      { $match: { owner: userID } },
+      {
+        $project: {
+          audioIds: {
+            $slice: [
+              "$items",
+              parseInt(pageNo) * parseInt(limit),
+              parseInt(limit),
+            ],
+          },
+        },
       },
-    });
+      { $unwind: "$audioIds" },
+      {
+        $lookup: {
+          from: "audios",
+          localField: "audioIds",
+          foreignField: "_id",
+          as: "audioInfo",
+        },
+      },
+      { $unwind: "$audioInfo" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "audioInfo.owner",
+          foreignField: "_id",
+          as: "ownerInfo",
+        },
+      },
+      { $unwind: "$ownerInfo" },
+      {
+        $project: {
+          _id: 0,
+          id: "$audioInfo._id",
+          title: "$audioInfo.title",
+          about: "$audioInfo.about",
+          category: "$audioInfo.category",
+          file: "$audioInfo.file.url",
+          poster: "$audioInfo.poster.url",
+          owner: { name: "$ownerInfo.name", id: "$ownerInfo._id" },
+        },
+      },
+    ]);
 
-    if (!favorite) {
-      res.json({ audios: [] });
-      return;
-    }
-    const audios = favorite.items.map((item) => {
-      return {
-        id: item._id,
-        title: item.title,
-        category: item.category,
-        file: item.file.url,
-        poster: item.poster?.url,
-        owner: { name: item.owner.name, id: item.owner._id },
-      };
-    });
-    res.json({ audios });
+    res.json({ audios: favorites });
   };
 
   getIsFavorite: RequestHandler = async (req, res) => {
