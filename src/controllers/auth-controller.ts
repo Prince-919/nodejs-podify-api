@@ -67,6 +67,11 @@ class UserController {
       return;
     }
 
+    if (user.verified) {
+      res.status(422).json({ error: "Your account is already verified!" });
+      return;
+    }
+
     await EmailVerificationToken.findOneAndDelete({ owner: userId });
 
     const token = generateToken();
